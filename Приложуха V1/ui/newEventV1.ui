@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NewEvent</class>
+ <widget class="QDialog" name="NewEvent">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>427</width>
+    <height>399</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Новое событие</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout_2">
+   <item row="0" column="1">
+    <widget class="QLabel" name="createNameEvent_L">
+     <property name="font">
+      <font>
+       <family>Bahnschrift Light Condensed</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Название для события</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="eventNameInput">
+     <property name="font">
+      <font>
+       <family>Bahnschrift Light Condensed</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="eventDesc_L">
+     <property name="font">
+      <font>
+       <family>Bahnschrift Light Condensed</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Описание события</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QPlainTextEdit" name="eventDescInput">
+     <property name="font">
+      <font>
+       <family>Bahnschrift Light Condensed</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="eventDate_L">
+     <property name="font">
+      <font>
+       <family>Bahnschrift Light Condensed</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Дата события</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QDateEdit" name="dateEdit">
+     <property name="font">
+      <font>
+       <family>Bahnschrift Light Condensed</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <layout class="QHBoxLayout" name="repeatingContainer">
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="repeatCheck">
+       <property name="font">
+        <font>
+         <family>Bahnschrift Light Condensed</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Повторяющеся</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="repeatFregBox">
+       <property name="font">
+        <font>
+         <family>Bahnschrift Light Condensed</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <item>
+        <property name="text">
+         <string>Ежедневно</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Раз в неделю</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Раз в две недели</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Раз в месяц</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Раз в три месяца</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Раз в полгода</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Своё</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="8" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="9" column="1">
+    <layout class="QHBoxLayout" name="buttonsContainer">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushCreateEvent">
+       <property name="font">
+        <font>
+         <family>Bahnschrift Light Condensed</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Создать</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushCloseEvent">
+       <property name="font">
+        <font>
+         <family>Bahnschrift Light Condensed</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Закрыть</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
