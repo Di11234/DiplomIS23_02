@@ -1,10 +1,11 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 import psycopg,sys
+import random
 global currentMenu
+from datetime import datetime
 
 conn = psycopg.connect(dbname="postgres", user="postgres", password="55665", host="localhost", port="2024")
 cur = conn.cursor()
-
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -300,131 +301,134 @@ class Ui_MainWindow(object):
         self.pushToCreateM.setStyleSheet("background-color:#64898F")
 
         if not hasattr(self,'mainVertLayout'):
-            self.mainVertWidget = QtWidgets.QWidget(parent=self.scrollAreaWidgetContents)
-            self.mainVertWidget.setObjectName("mainVertWidget")
-            self.mainVertLayout = QtWidgets.QVBoxLayout(self.mainVertWidget)
-            self.mainVertLayout.setContentsMargins(11, 11, 11, 11)
-            self.mainVertLayout.setObjectName("mainVertLayout")
-            self.mainToday_L = QtWidgets.QLabel(parent=self.mainVertWidget)
+            setattr(self, "mainVertWidget", QtWidgets.QWidget(parent=self.scrollAreaWidgetContents))
+            mainVertWidget = getattr(self, "mainVertWidget")
+            mainVertWidget.setObjectName("mainVertWidget")
+            mainVertLayout = QtWidgets.QVBoxLayout(mainVertWidget)
+            mainVertLayout.setContentsMargins(11, 11, 11, 11)
+            mainVertLayout.setObjectName("mainVertLayout")
+            mainToday_L = QtWidgets.QLabel(parent=mainVertWidget)
             font = QtGui.QFont()
             font.setFamily("Bahnschrift Light Condensed")
             font.setPointSize(20)
-            self.mainToday_L.setFont(font)
-            self.mainToday_L.setStyleSheet("background-color:#64898F;padding: 5px; border-radius: 15px")
-            self.mainToday_L.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-            self.mainToday_L.setObjectName("mainToday_L")
+            mainToday_L.setFont(font)
+            mainToday_L.setStyleSheet("background-color:#64898F;padding: 5px; border-radius: 15px")
+            mainToday_L.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            mainToday_L.setObjectName("mainToday_L")
             sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding,
                                                QtWidgets.QSizePolicy.Policy.MinimumExpanding)
             sizePolicy.setHorizontalStretch(50)
             sizePolicy.setVerticalStretch(50)
             sizePolicy.setHeightForWidth(self.scrollAreaWidgetContents.sizePolicy().hasHeightForWidth())
-            self.mainToday_L.setSizePolicy(sizePolicy)
-            self.mainVertLayout.addWidget(self.mainToday_L)
-            self.todayContainer = QtWidgets.QHBoxLayout()
-            self.todayContainer.setObjectName("todayContainer")
-            self.eventTodayNumX = QtWidgets.QWidget(parent=self.mainVertWidget)
-            # self.eventTodayNumX.setStyleSheet("border: 3px solid #64898F; border-radius: 15px")
-            self.eventTodayNumX.setStyleSheet("""
-                    QWidget#eventTodayNumX {
-                   border: 3px solid #64898F; border-radius: 15px
-                    }
-                    """)
-            self.eventTodayNumX.setObjectName("eventTodayNumX")
-            self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.eventTodayNumX)
-            self.verticalLayout_2.setObjectName("verticalLayout_2")
-            self.todayDateX = QtWidgets.QLabel(parent=self.eventTodayNumX)
-            self.todayDateX.setAlignment(
-                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.todayDateX.setObjectName("todayDateX")
-            self.verticalLayout_2.addWidget(self.todayDateX)
-            self.todayNameX = QtWidgets.QLabel(parent=self.eventTodayNumX)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(20)
-            font.setBold(True)
-            font.setWeight(75)
-            self.todayNameX.setFont(font)
-            self.todayNameX.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-            self.todayNameX.setObjectName("todayNameX")
-            self.verticalLayout_2.addWidget(self.todayNameX)
-            self.todayDescX = QtWidgets.QLabel(parent=self.eventTodayNumX)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(18)
-            self.todayDescX.setFont(font)
-            self.todayDescX.setObjectName("todayDescX")
-            self.verticalLayout_2.addWidget(self.todayDescX)
-            spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Minimum,
-                                               QtWidgets.QSizePolicy.Policy.Minimum)
-            self.verticalLayout_2.addItem(spacerItem)
-            self.buttonsSchedMenuX = QtWidgets.QHBoxLayout()
-            self.buttonsSchedMenuX.setContentsMargins(-1, 0, -1, -1)
-            self.buttonsSchedMenuX.setObjectName("buttonsSchedMenuX")
-            self.todayToDoX = QtWidgets.QPushButton(parent=self.eventTodayNumX)
-            self.todayToDoX.setObjectName("todayToDoX")
-            self.buttonsSchedMenuX.addWidget(self.todayToDoX)
-            self.todayToCancelX = QtWidgets.QPushButton(parent=self.eventTodayNumX)
-            self.todayToCancelX.setObjectName("todayToCancelX")
-            self.buttonsSchedMenuX.addWidget(self.todayToCancelX)
-            self.todayDoneX = QtWidgets.QLabel(parent=self.eventTodayNumX)
-            self.todayDoneX.setAlignment(
-                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.todayDoneX.setObjectName("todayDoneX")
-            self.buttonsSchedMenuX.addWidget(self.todayDoneX)
-            self.verticalLayout_2.addLayout(self.buttonsSchedMenuX)
-            self.todayContainer.addWidget(self.eventTodayNumX)
-            self.mainVertLayout.addLayout(self.todayContainer)
-            self.mainClosest = QtWidgets.QLabel(parent=self.mainVertWidget)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(20)
-            self.mainClosest.setFont(font)
-            self.mainClosest.setStyleSheet("background-color:#64898F;padding: 5px; border-radius: 15px")
-            self.mainClosest.setObjectName("mainClosest")
-            self.mainVertLayout.addWidget(self.mainClosest)
-            self.closestContainer = QtWidgets.QHBoxLayout()
-            self.closestContainer.setContentsMargins(0, 0, -1, -1)
-            self.closestContainer.setObjectName("closestContainer")
-            self.label_4 = QtWidgets.QLabel(parent=self.mainVertWidget)
-            self.label_4.setObjectName("label_4")
-            self.closestContainer.addWidget(self.label_4)
-            self.label_4.setHidden(True)
-            self.mainVertLayout.addLayout(self.closestContainer)
-            self.mainVertLayout.setStretch(0, 3)
-            self.mainVertLayout.setStretch(1, 7)
-            self.horizontalLayout.addWidget(self.mainVertWidget)
-            self.scrollAreaContainer.addWidget(self.scrollArea)
-            self.horizontalLayout_2.addLayout(self.scrollAreaContainer)
-            self.horizontalLayout_2.setStretch(0, 2)
-            self.horizontalLayout_2.setStretch(1, 5)
-            self.todayToDoX.setStyleSheet("background-color:#64898F")
-            self.todayToCancelX.setStyleSheet("background-color:#64898F")
-            self.todayNameX.setStyleSheet("background-color:#64898F;padding: 5px; border-radius: 15px")
+            mainToday_L.setSizePolicy(sizePolicy)
+            mainVertLayout.addWidget(mainToday_L)
+            todayContainer = QtWidgets.QHBoxLayout()
+            todayContainer.setObjectName("todayContainer")
+
+            cur.execute("SELECT * FROM события")
+            check=cur.fetchall()
+            todaysdate=str(datetime.today().strftime('%Y-%m-%d'))
+            print(todaysdate)
+
+            for i in range(len(check)):
+                if check[i][3]==True or str(check[i][2])==str(todaysdate):
+                    eventTodayNumX = QtWidgets.QWidget(parent=mainVertWidget)
+                    # eventTodayNumX.setStyleSheet("border: 3px solid #64898F; border-radius: 15px")
+                    eventTodayNumX.setStyleSheet("""
+                                                        QWidget#eventTodayNumX {
+                                                       border: 3px solid #64898F; border-radius: 15px
+                                                        }
+                                                        """)
+                    eventTodayNumX.setObjectName("eventTodayNumX")
+                    verticalLayout_2 = QtWidgets.QVBoxLayout(eventTodayNumX)
+                    verticalLayout_2.setObjectName("verticalLayout_2")
+                    todayDateX = QtWidgets.QLabel(parent=eventTodayNumX)
+                    if check[i][3]==True:
+                        todayDateX.setText("Ежедневное")
+                    else:
+                        todayDateX.setText(str(check[i][2]))
+                    todayDateX.setAlignment(
+                        QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                    todayDateX.setObjectName("todayDateX")
+                    verticalLayout_2.addWidget(todayDateX)
+                    todayNameX = QtWidgets.QLabel(parent=eventTodayNumX)
+                    todayNameX.setText(check[i][1])
+                    font = QtGui.QFont()
+                    font.setFamily("Bahnschrift Light Condensed")
+                    font.setPointSize(20)
+                    font.setBold(True)
+                    font.setWeight(75)
+                    todayNameX.setFont(font)
+                    todayNameX.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                    todayNameX.setObjectName("todayNameX")
+                    verticalLayout_2.addWidget(todayNameX)
+                    todayDescX = QtWidgets.QLabel(parent=eventTodayNumX)
+                    font = QtGui.QFont()
+                    font.setFamily("Bahnschrift Light Condensed")
+                    font.setPointSize(18)
+                    todayDescX.setFont(font)
+                    todayDescX.setObjectName("todayDescX")
+                    verticalLayout_2.addWidget(todayDescX)
+                    setattr(self, "spacerItem", QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Minimum,
+                                                                      QtWidgets.QSizePolicy.Policy.Minimum))
+                    spacerItem = getattr(self, "spacerItem")
+                    verticalLayout_2.addItem(spacerItem)
+                    buttonsSchedMenuX = QtWidgets.QHBoxLayout()
+                    buttonsSchedMenuX.setContentsMargins(-1, 0, -1, -1)
+                    buttonsSchedMenuX.setObjectName("buttonsSchedMenuX")
+                    todayToDoX = QtWidgets.QPushButton(parent=eventTodayNumX)
+                    todayToDoX.setObjectName("todayToDoX")
+                    buttonsSchedMenuX.addWidget(todayToDoX)
+                    todayToCancelX = QtWidgets.QPushButton(parent=eventTodayNumX)
+                    todayToCancelX.setObjectName("todayToCancelX")
+                    buttonsSchedMenuX.addWidget(todayToCancelX)
+                    todayDoneX = QtWidgets.QLabel(parent=eventTodayNumX)
+                    todayDoneX.setAlignment(
+                        QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                    todayDoneX.setObjectName("todayDoneX")
+                    buttonsSchedMenuX.addWidget(todayDoneX)
+                    verticalLayout_2.addLayout(buttonsSchedMenuX)
+                    todayContainer.addWidget(eventTodayNumX)
+                    mainVertLayout.addLayout(todayContainer)
+                    closestContainer = QtWidgets.QHBoxLayout()
+                    closestContainer.setContentsMargins(0, 0, -1, -1)
+                    closestContainer.setObjectName("closestContainer")
+                    label_4 = QtWidgets.QLabel(parent=mainVertWidget)
+                    label_4.setObjectName("label_4")
+                    closestContainer.addWidget(label_4)
+                    label_4.setHidden(True)
+                    mainVertLayout.addLayout(closestContainer)
+                    mainVertLayout.setStretch(0, 3)
+                    mainVertLayout.setStretch(1, 7)
+                    self.horizontalLayout.addWidget(mainVertWidget)
+                    self.scrollAreaContainer.addWidget(self.scrollArea)
+                    self.horizontalLayout_2.addLayout(self.scrollAreaContainer)
+                    self.horizontalLayout_2.setStretch(0, 2)
+                    self.horizontalLayout_2.setStretch(1, 5)
+                    todayToDoX.setStyleSheet("background-color:#64898F")
+                    todayToCancelX.setStyleSheet("background-color:#64898F")
+                    todayNameX.setStyleSheet("background-color:#64898F;padding: 5px; border-radius: 15px")
+
+                    _translate = QtCore.QCoreApplication.translate
+                    MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+                    mainToday_L.setText(_translate("MainWindow", "Сегодня"))
+                    todayDescX.setText(_translate("MainWindow", "Описание"))
+                    todayToDoX.setText(_translate("MainWindow", "Сделать"))
+                    todayToCancelX.setText(_translate("MainWindow", "Отменить"))
+                    todayDoneX.setText(_translate("MainWindow", "Сделано"))
+                    #mainClosest.setText(_translate("MainWindow", "Ближайшие события"))
+                    label_4.setText(_translate("MainWindow", "TextLabel"))
+
+
+
             MainWindow.setCentralWidget(self.centralwidget)
 
             QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-            _translate = QtCore.QCoreApplication.translate
-            MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-            self.mainPage.setText(_translate("MainWindow", "Главная"))
-            self.petsPage.setText(_translate("MainWindow", "Питомцы"))
-            self.schedPage.setText(_translate("MainWindow", "Расписание"))
-            self.cagesPage.setText(_translate("MainWindow", "Клетки"))
-            self.pushToCreateM.setText(_translate("MainWindow", "Добавить"))
-            self.pushToRedactM.setText(_translate("MainWindow", "Редактировать"))
-            self.pushToSearch.setText(_translate("MainWindow", "Найти"))
-            self.mainToday_L.setText(_translate("MainWindow", "Сегодня"))
-            self.todayDateX.setText(_translate("MainWindow", "Ежедневное/Дата"))
-            self.todayNameX.setText(_translate("MainWindow", "Название"))
-            self.todayDescX.setText(_translate("MainWindow", "Описание"))
-            self.todayToDoX.setText(_translate("MainWindow", "Сделать"))
-            self.todayToCancelX.setText(_translate("MainWindow", "Отменить"))
-            self.todayDoneX.setText(_translate("MainWindow", "Сделано"))
-            self.mainClosest.setText(_translate("MainWindow", "Ближайшие события"))
-            self.label_4.setText(_translate("MainWindow", "TextLabel"))
+
         else:
-            self.mainVertWidget.setParent(self.scrollAreaWidgetContents)
-            self.mainVertWidget.show()
+            getattr(self, "mainVertWidget").setParent(self.scrollAreaWidgetContents)
+            getattr(self, "mainVertWidget").show()
 
         self.petsPage.setStyleSheet("""
                                     QPushButton {
@@ -474,551 +478,723 @@ class Ui_MainWindow(object):
         self.pushToSearch.setStyleSheet("background-color:#CDA989")
         self.pushToRedactM.setStyleSheet("background-color:#CDA989")
         self.pushToCreateM.setStyleSheet("background-color:#CDA989")
-        if not hasattr(self,'containerPet'):
-            self.containerPet = QtWidgets.QWidget(parent=self.scrollAreaWidgetContents)
-            self.containerPet.setStyleSheet("")
-            self.containerPet.setObjectName("containerPet")
-            self.formLayout = QtWidgets.QFormLayout(self.containerPet)
-            self.formLayout.setRowWrapPolicy(QtWidgets.QFormLayout.RowWrapPolicy.WrapLongRows)
-            self.formLayout.setLabelAlignment(
-                QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.formLayout.setFormAlignment(
-                QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
-            self.formLayout.setContentsMargins(0, 5, 5, -1)
-            self.formLayout.setSpacing(5)
-            self.formLayout.setObjectName("formLayout")
-            self.petNameLO = QtWidgets.QHBoxLayout()
-            self.petNameLO.setContentsMargins(-1, 0, -1, -1)
-            self.petNameLO.setObjectName("petNameLO")
-            self.descName_L = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(20)
-            self.descName_L.setFont(font)
-            self.descName_L.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-            self.descName_L.setObjectName("descName_L")
-            self.petNameLO.addWidget(self.descName_L)
-            self.petNameEdit = QtWidgets.QLineEdit(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petNameEdit.sizePolicy().hasHeightForWidth())
-            self.petNameEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light SemiCondensed")
-            font.setPointSize(20)
-            self.petNameEdit.setFont(font)
-            self.petNameEdit.setObjectName("petNameEdit")
-            self.petNameEdit.setHidden(True)
-            self.petNameLO.addWidget(self.petNameEdit)
-            self.formLayout.setLayout(2, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petNameLO)
-            self.petSpecLO = QtWidgets.QHBoxLayout()
-            self.petSpecLO.setContentsMargins(-1, 0, -1, -1)
-            self.petSpecLO.setObjectName("petSpecLO")
-            self.petSpec = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petSpec.setFont(font)
-            self.petSpec.setObjectName("petSpec")
-            self.petSpecLO.addWidget(self.petSpec)
-            self.petSpecEdit = QtWidgets.QComboBox(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petSpecEdit.sizePolicy().hasHeightForWidth())
-            self.petSpecEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petSpecEdit.setFont(font)
-            self.petSpecEdit.setObjectName("petSpecEdit")
-            self.petSpecEdit.setHidden(True)
-            self.petSpecLO.addWidget(self.petSpecEdit)
-            self.formLayout.setLayout(3, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petSpecLO)
-            self.petMorphLO = QtWidgets.QHBoxLayout()
-            self.petMorphLO.setContentsMargins(-1, 0, -1, -1)
-            self.petMorphLO.setObjectName("petMorphLO")
-            self.petMorph = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petMorph.setFont(font)
-            self.petMorph.setObjectName("petMorph")
-            self.petMorphLO.addWidget(self.petMorph)
-            self.petMorphEdit = QtWidgets.QComboBox(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petMorphEdit.sizePolicy().hasHeightForWidth())
-            self.petMorphEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petMorphEdit.setFont(font)
-            self.petMorphEdit.setObjectName("petMorphEdit")
-            self.petMorphLO.addWidget(self.petMorphEdit)
-            self.petMorphEdit.setHidden(True)
-            self.formLayout.setLayout(4, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petMorphLO)
-            self.petsAgeBirthdayLO = QtWidgets.QHBoxLayout()
-            self.petsAgeBirthdayLO.setContentsMargins(-1, 0, -1, -1)
-            self.petsAgeBirthdayLO.setObjectName("petsAgeBirthdayLO")
-            self.petsAgeBirthday = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsAgeBirthday.setFont(font)
-            self.petsAgeBirthday.setObjectName("petsAgeBirthday")
-            self.petsAgeBirthdayLO.addWidget(self.petsAgeBirthday)
-            self.petsAgeEdit = QtWidgets.QSpinBox(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petsAgeEdit.sizePolicy().hasHeightForWidth())
-            self.petsAgeEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsAgeEdit.setFont(font)
-            self.petsAgeEdit.setObjectName("petsAgeEdit")
-            self.petsAgeBirthdayLO.addWidget(self.petsAgeEdit)
-            self.petsAgeEdit.setHidden(True)
-            self.petsBirthdayEdit = QtWidgets.QDateEdit(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsBirthdayEdit.setFont(font)
-            self.petsBirthdayEdit.setObjectName("petsBirthdayEdit")
-            self.petsAgeBirthdayLO.addWidget(self.petsBirthdayEdit)
-            self.petsBirthdayEdit.setHidden(True)
-            self.formLayout.setLayout(5, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petsAgeBirthdayLO)
-            self.petsGenLO = QtWidgets.QHBoxLayout()
-            self.petsGenLO.setContentsMargins(-1, 0, -1, -1)
-            self.petsGenLO.setObjectName("petsGenLO")
-            self.petsGen = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsGen.setFont(font)
-            self.petsGen.setObjectName("petsGen")
-            self.petsGenLO.addWidget(self.petsGen)
-            self.petsGenEdit = QtWidgets.QComboBox(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petsGenEdit.sizePolicy().hasHeightForWidth())
-            self.petsGenEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsGenEdit.setFont(font)
-            self.petsGenEdit.setCurrentText("")
-            self.petsGenEdit.setObjectName("petsGenEdit")
-            self.petsGenLO.addWidget(self.petsGenEdit)
-            self.petsGenEdit.setHidden(True)
-            self.formLayout.setLayout(6, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petsGenLO)
-            self.petWeightLO = QtWidgets.QHBoxLayout()
-            self.petWeightLO.setContentsMargins(-1, 0, -1, -1)
-            self.petWeightLO.setObjectName("petWeightLO")
-            self.petsWeight = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsWeight.setFont(font)
-            self.petsWeight.setObjectName("petsWeight")
-            self.petWeightLO.addWidget(self.petsWeight)
-            self.petWeightNumEdit = QtWidgets.QSpinBox(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petWeightNumEdit.sizePolicy().hasHeightForWidth())
-            self.petWeightNumEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petWeightNumEdit.setFont(font)
-            self.petWeightNumEdit.setObjectName("petWeightNumEdit")
-            self.petWeightNumEdit.setHidden(True)
-            self.petWeightLO.addWidget(self.petWeightNumEdit)
-            self.petWeightAsEdit = QtWidgets.QLineEdit(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petWeightAsEdit.sizePolicy().hasHeightForWidth())
-            self.petWeightAsEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petWeightAsEdit.setFont(font)
-            self.petWeightAsEdit.setText("")
-            self.petWeightAsEdit.setObjectName("petWeightAsEdit")
-            self.petWeightLO.addWidget(self.petWeightAsEdit)
-            self.petWeightAsEdit.setHidden(True)
-            self.formLayout.setLayout(7, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petWeightLO)
-            self.petsSymptomsLO = QtWidgets.QHBoxLayout()
-            self.petsSymptomsLO.setContentsMargins(-1, 0, -1, -1)
-            self.petsSymptomsLO.setObjectName("petsSymptomsLO")
-            self.petSympotms = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petSympotms.setFont(font)
-            self.petSympotms.setObjectName("petSympotms")
-            self.petsSymptomsLO.addWidget(self.petSympotms)
-            self.petsSymptomsEdit = QtWidgets.QLineEdit(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petsSymptomsEdit.sizePolicy().hasHeightForWidth())
-            self.petsSymptomsEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsSymptomsEdit.setFont(font)
-            self.petsSymptomsEdit.setObjectName("petsSymptomsEdit")
-            self.petsSymptomsLO.addWidget(self.petsSymptomsEdit)
-            self.petsSymptomsEdit.setHidden(True)
-            self.formLayout.setLayout(8, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petsSymptomsLO)
-            self.petDiagnosisLO = QtWidgets.QHBoxLayout()
-            self.petDiagnosisLO.setContentsMargins(-1, 0, -1, -1)
-            self.petDiagnosisLO.setObjectName("petDiagnosisLO")
-            self.label = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.label.setFont(font)
-            self.label.setObjectName("label")
-            self.petDiagnosisLO.addWidget(self.label)
-            self.petDiagnosisEdit = QtWidgets.QLineEdit(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petDiagnosisEdit.setFont(font)
-            self.petDiagnosisEdit.setObjectName("petDiagnosisEdit")
-            self.petDiagnosisLO.addWidget(self.petDiagnosisEdit)
-            self.petDiagnosisEdit.setHidden(True)
-            self.formLayout.setLayout(9, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petDiagnosisLO)
-            self.petNeuteredLO = QtWidgets.QHBoxLayout()
-            self.petNeuteredLO.setContentsMargins(-1, 0, -1, -1)
-            self.petNeuteredLO.setObjectName("petNeuteredLO")
-            self.petNeutered = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petNeutered.setFont(font)
-            self.petNeutered.setObjectName("petNeutered")
-            self.petNeuteredLO.addWidget(self.petNeutered)
-            self.petNeuteredEdit = QtWidgets.QCheckBox(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petNeuteredEdit.sizePolicy().hasHeightForWidth())
-            self.petNeuteredEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petNeuteredEdit.setFont(font)
-            self.petNeuteredEdit.setObjectName("petNeuteredEdit")
-            self.petNeuteredLO.addWidget(self.petNeuteredEdit)
-            self.petNeuteredEdit.setHidden(True)
-            self.formLayout.setLayout(10, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petNeuteredLO)
-            self.petsVacsLO = QtWidgets.QHBoxLayout()
-            self.petsVacsLO.setContentsMargins(-1, 0, -1, -1)
-            self.petsVacsLO.setObjectName("petsVacsLO")
-            self.petsVacs = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsVacs.setFont(font)
-            self.petsVacs.setObjectName("petsVacs")
-            self.petsVacsLO.addWidget(self.petsVacs)
-            self.petsVacsEdit = QtWidgets.QLineEdit(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petsVacsEdit.sizePolicy().hasHeightForWidth())
-            self.petsVacsEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsVacsEdit.setFont(font)
-            self.petsVacsEdit.setObjectName("petsVacsEdit")
-            self.petsVacsLO.addWidget(self.petsVacsEdit)
-            self.petsVacsEdit.setHidden(True)
-            self.formLayout.setLayout(11, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petsVacsLO)
-            self.petsMictochipLO = QtWidgets.QHBoxLayout()
-            self.petsMictochipLO.setContentsMargins(-1, 0, -1, -1)
-            self.petsMictochipLO.setObjectName("petsMictochipLO")
-            self.petsMicrochip = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsMicrochip.setFont(font)
-            self.petsMicrochip.setObjectName("petsMicrochip")
-            self.petsMictochipLO.addWidget(self.petsMicrochip)
-            self.petMicrochipEdit = QtWidgets.QCheckBox(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petMicrochipEdit.sizePolicy().hasHeightForWidth())
-            self.petMicrochipEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petMicrochipEdit.setFont(font)
-            self.petMicrochipEdit.setObjectName("petMicrochipEdit")
-            self.petsMictochipLO.addWidget(self.petMicrochipEdit)
-            self.petMicrochipEdit.setHidden(True)
-            self.formLayout.setLayout(12, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petsMictochipLO)
-            self.petsOwnerLO = QtWidgets.QHBoxLayout()
-            self.petsOwnerLO.setContentsMargins(-1, 0, -1, -1)
-            self.petsOwnerLO.setObjectName("petsOwnerLO")
-            self.petsOwner = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsOwner.setFont(font)
-            self.petsOwner.setObjectName("petsOwner")
-            self.petsOwnerLO.addWidget(self.petsOwner)
-            self.petsOwnerEdit = QtWidgets.QLineEdit(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petsOwnerEdit.sizePolicy().hasHeightForWidth())
-            self.petsOwnerEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsOwnerEdit.setFont(font)
-            self.petsOwnerEdit.setObjectName("petsOwnerEdit")
-            self.petsOwnerLO.addWidget(self.petsOwnerEdit)
-            self.petsOwnerEdit.setHidden(True)
-            self.formLayout.setLayout(13, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petsOwnerLO)
-            self.petsLiveInLO = QtWidgets.QHBoxLayout()
-            self.petsLiveInLO.setContentsMargins(-1, 0, -1, -1)
-            self.petsLiveInLO.setObjectName("petsLiveInLO")
-            self.petsLivein = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsLivein.setFont(font)
-            self.petsLivein.setObjectName("petsLivein")
-            self.petsLiveInLO.addWidget(self.petsLivein)
-            self.petsLiveinEdit = QtWidgets.QPushButton(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petsLiveinEdit.sizePolicy().hasHeightForWidth())
-            self.petsLiveinEdit.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petsLiveinEdit.setFont(font)
-            self.petsLiveinEdit.setObjectName("petsLiveinEdit")
-            self.petsLiveInLO.addWidget(self.petsLiveinEdit)
-            self.petsLiveinEdit.setHidden(True)
-            self.formLayout.setLayout(14, QtWidgets.QFormLayout.ItemRole.FieldRole, self.petsLiveInLO)
-            spacerItem = QtWidgets.QSpacerItem(20, 100, QtWidgets.QSizePolicy.Policy.Minimum,
-                                               QtWidgets.QSizePolicy.Policy.Expanding)
-            self.formLayout.setItem(17, QtWidgets.QFormLayout.ItemRole.FieldRole, spacerItem)
-            self.eventActions = QtWidgets.QHBoxLayout()
-            self.eventActions.setContentsMargins(-1, 0, -1, -1)
-            self.eventActions.setObjectName("eventActions")
-            spacerItem1 = QtWidgets.QSpacerItem(100, 20, QtWidgets.QSizePolicy.Policy.Expanding,
-                                                QtWidgets.QSizePolicy.Policy.Minimum)
-            self.eventActions.addItem(spacerItem1)
-            self.pushToRedact = QtWidgets.QPushButton(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(12)
-            self.pushToRedact.setFont(font)
-            self.pushToRedact.setObjectName("pushToRedact")
-            self.eventActions.addWidget(self.pushToRedact)
-            self.pushButton = QtWidgets.QPushButton(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-            self.pushButton.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(12)
-            self.pushButton.setFont(font)
-            self.pushButton.setObjectName("pushButton")
-            self.eventActions.addWidget(self.pushButton)
-            self.eventActions.setStretch(0, 4)
-            self.eventActions.setStretch(1, 3)
-            self.formLayout.setLayout(20, QtWidgets.QFormLayout.ItemRole.FieldRole, self.eventActions)
-            self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
-            self.horizontalLayout_7.setContentsMargins(-1, 50, -1, -1)
-            self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-            self.petPhoto = QtWidgets.QLabel(parent=self.containerPet)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(15)
-            self.petPhoto.setFont(font)
-            self.petPhoto.setText("")
-            self.petPhoto.setPixmap(QtGui.QPixmap("../maket/car.png"))
-            self.petPhoto.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-            self.petPhoto.setObjectName("petPhoto")
-            self.horizontalLayout_7.addWidget(self.petPhoto)
-            self.petPhotoWayToFile = QtWidgets.QLineEdit(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petPhotoWayToFile.sizePolicy().hasHeightForWidth())
-            self.petPhotoWayToFile.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light SemiCondensed")
-            font.setPointSize(14)
-            self.petPhotoWayToFile.setFont(font)
-            self.petPhotoWayToFile.setText("")
-            self.petPhotoWayToFile.setObjectName("petPhotoWayToFile")
-            self.horizontalLayout_7.addWidget(self.petPhotoWayToFile)
-            self.petPhotoWayToFile.setHidden(True)
-            self.petPhotoChoose = QtWidgets.QPushButton(parent=self.containerPet)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                               QtWidgets.QSizePolicy.Policy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(self.petPhotoChoose.sizePolicy().hasHeightForWidth())
-            self.petPhotoChoose.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setFamily("Bahnschrift Light Condensed")
-            font.setPointSize(14)
-            self.petPhotoChoose.setFont(font)
-            self.petPhotoChoose.setObjectName("petPhotoChoose")
-            self.horizontalLayout_7.addWidget(self.petPhotoChoose)
-            self.petPhotoChoose.setHidden(True)
-            self.formLayout.setLayout(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.horizontalLayout_7)
-            self.horizontalLayout.addWidget(self.containerPet)
-            spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
-                                                QtWidgets.QSizePolicy.Policy.Minimum)
-            self.horizontalLayout.addItem(spacerItem2)
-            self.scrollAreaContainer.addWidget(self.scrollArea)
-            self.horizontalLayout_2.addLayout(self.scrollAreaContainer)
-            self.horizontalLayout_2.setStretch(0, 2)
-            self.horizontalLayout_2.setStretch(1, 5)
-        self.containerPet.setStyleSheet("""
-                QWidget#containerPet {
-               border: 3px solid #CDA989; border-radius: 15px
-                }
-                """)
-        self.petsPage.setStyleSheet("""
-                        QPushButton {
-                        background-color:#CDA989;
-                    }
-                            QPushButton:disabled {
-                                background-color: #B28B77;
-                                color: black;
-                            }
-                        """)
-        self.schedPage.setStyleSheet("""
-                                QPushButton {
-                                background-color:#CDA989;
-                            }
-                                    QPushButton:disabled {
-                                        background-color: #B28B77;
-                                        color: black;
-                                    }
-                                """)
-        self.mainPage.setStyleSheet("""
-                                QPushButton {
-                                background-color:#CDA989;
-                            }
-                                    QPushButton:disabled {
-                                        background-color: #B28B77;
-                                        color: black;
-                                    }
-                                """)
-        self.cagesPage.setStyleSheet("""
-                                QPushButton {
-                                background-color:#CDA989;
-                            }
-                                    QPushButton:disabled {
-                                        background-color: #B28B77;
-                                        color: black;
-                                    }
-                                """)
 
-        self.pushToRedact.setStyleSheet("background-color: #CDA989")
-        self.pushButton.setStyleSheet("background-color: #CDA989")
-        self.containerPet.setParent(self.scrollAreaWidgetContents)
-        self.containerPet.setHidden(False)
+        cur.execute("SELECT * FROM питомцы")
+        check = cur.fetchall()
 
-        # self.containerPet.setStyleSheet(""QWidget{:background-color:#CDA989;padding: 5px}"")
-        # self.containerPet.setStyleSheet("""
-        # QWidget {
-        # background-color:#CDA989; padding: 5px;
-        # }
-        # """)
-        self.descName_L.setStyleSheet("background-color:#CDA989;padding: 5px; border-radius: 15px")
+        for i in range(len(check)):
+            if not hasattr(self,f'containerPet_{i}'):
+                setattr(self, f"containerPet_{i}", QtWidgets.QWidget(parent=self.scrollAreaWidgetContents))
+                containerPet = getattr(self, f"containerPet_{i}")
+                containerPet.setObjectName("containerPet")
+                self.formLayout = QtWidgets.QFormLayout(containerPet)
+                self.formLayout.setRowWrapPolicy(QtWidgets.QFormLayout.RowWrapPolicy.WrapLongRows)
+                self.formLayout.setLabelAlignment(
+                    QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                self.formLayout.setFormAlignment(
+                    QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
+                self.formLayout.setContentsMargins(0, 5, 5, -1)
+                self.formLayout.setSpacing(5)
+                self.formLayout.setObjectName("formLayout")
 
-        MainWindow.setCentralWidget(self.centralwidget)
+                setattr(self, f"petNameLO_{i}", QtWidgets.QHBoxLayout())
+                petNameLO = getattr(self, f"petNameLO_{i}")
 
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.mainPage.setText(_translate("MainWindow", "Главная"))
-        self.petsPage.setText(_translate("MainWindow", "Питомцы"))
-        self.schedPage.setText(_translate("MainWindow", "Расписание"))
-        self.cagesPage.setText(_translate("MainWindow", "Клетки"))
-        self.pushToCreateM.setText(_translate("MainWindow", "Добавить"))
-        self.pushToRedactM.setText(_translate("MainWindow", "Редактировать"))
-        self.pushToSearch.setText(_translate("MainWindow", "Найти"))
-        self.descName_L.setText(_translate("MainWindow", "Имя питомца"))
-        self.petNameEdit.setPlaceholderText(_translate("MainWindow", "Имя"))
-        self.petSpec.setText(_translate("MainWindow", "Вид"))
-        self.petMorph.setText(_translate("MainWindow", "Порода"))
-        self.petsAgeBirthday.setText(_translate("MainWindow", "Возраст и день рождения"))
-        self.petsGen.setText(_translate("MainWindow", "Пол"))
-        self.petsWeight.setText(_translate("MainWindow", "Вес"))
-        self.petWeightAsEdit.setPlaceholderText(_translate("MainWindow", "Единица измерения (Килограмм, грамм, т.д.)"))
-        self.petSympotms.setText(_translate("MainWindow", "Симптомы:"))
-        self.petsSymptomsEdit.setPlaceholderText(_translate("MainWindow", "Симптомы"))
-        self.label.setText(_translate("MainWindow", "Диагноз(ы):"))
-        self.petDiagnosisEdit.setPlaceholderText(_translate("MainWindow", "Диагноз(ы)"))
-        self.petNeutered.setText(_translate("MainWindow", "Кастрирован"))
-        self.petNeuteredEdit.setText(_translate("MainWindow", "Кастрирован"))
-        self.petsVacs.setText(_translate("MainWindow", "Прививки: (название прививки и дата прививки)"))
-        self.petsVacsEdit.setPlaceholderText(_translate("MainWindow", "Прививки"))
-        self.petsMicrochip.setText(_translate("MainWindow", "Микрочип:"))
-        self.petMicrochipEdit.setText(_translate("MainWindow", "Микрочип"))
-        self.petsOwner.setText(_translate("MainWindow", "Хозяин"))
-        self.petsOwnerEdit.setPlaceholderText(_translate("MainWindow", "Хозяин"))
-        self.petsLivein.setText(_translate("MainWindow", "Живёт в:"))
-        self.petsLiveinEdit.setText(_translate("MainWindow", "Выбрать вольер/клетку"))
-        self.pushToRedact.setText(_translate("MainWindow", "Редактировать"))
-        self.pushButton.setText(_translate("MainWindow", "Удалить"))
-        self.petPhotoWayToFile.setPlaceholderText(_translate("MainWindow", "Путь к изображению"))
-        self.petPhotoChoose.setText(_translate("MainWindow", "Выбрать изображение"))
+                petNameLO = QtWidgets.QHBoxLayout()
+                petNameLO.setContentsMargins(-1, 0, -1, -1)
+                petNameLO.setObjectName("petNameLO")
+
+                setattr(self, f"descName_L_{i}", QtWidgets.QLabel(parent=containerPet))
+                descName_L = getattr(self, f"descName_L_{i}")
+                print(check[i][1])
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(20)
+                descName_L.setFont(font)
+                descName_L.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                descName_L.setObjectName("descName_L")
+                petNameLO.addWidget(descName_L)
+
+                setattr(self, f"petNameEdit_{i}", QtWidgets.QLineEdit(parent=containerPet))
+                petNameEdit = getattr(self, f"petNameEdit_{i}")
+
+                descName_L.setText(check[i][1])
+                petNameEdit.setPlaceholderText("Имя питомца")
+                petNameEdit.setText(check[i][1])
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petNameEdit.sizePolicy().hasHeightForWidth())
+                petNameEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light SemiCondensed")
+                font.setPointSize(20)
+                petNameEdit.setFont(font)
+                petNameEdit.setObjectName("petNameEdit")
+                petNameEdit.setHidden(True)
+                petNameLO.addWidget(petNameEdit)
+                self.formLayout.setLayout(2, QtWidgets.QFormLayout.ItemRole.FieldRole, petNameLO)
+
+                setattr(self, f"petSpecLO_{i}", QtWidgets.QHBoxLayout())
+                petSpecLO = getattr(self, f"petSpecLO_{i}")
+
+                petSpecLO.setContentsMargins(-1, 0, -1, -1)
+                petSpecLO.setObjectName("petSpecLO")
+
+                setattr(self, f"petSpec_{i}", QtWidgets.QLabel(parent=containerPet))
+                petSpec = getattr(self, f"petSpec_{i}")
+                petSpec.setText(("Вид: "+check[i][2]))
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petSpec.setFont(font)
+                petSpec.setObjectName("petSpec")
+                petSpecLO.addWidget(petSpec)
+
+                setattr(self, f"petSpecEdit_{i}", QtWidgets.QComboBox(parent=containerPet))
+                petSpecEdit = getattr(self, f"petSpecEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petSpecEdit.sizePolicy().hasHeightForWidth())
+                petSpecEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petSpecEdit.setFont(font)
+                petSpecEdit.setObjectName("petSpecEdit")
+                petSpecEdit.setHidden(True)
+                petSpecLO.addWidget(petSpecEdit)
+                self.formLayout.setLayout(3, QtWidgets.QFormLayout.ItemRole.FieldRole, petSpecLO)
+
+                setattr(self, f"petMorphLO_{i}", QtWidgets.QHBoxLayout())
+                petMorphLO = getattr(self, f"petMorphLO_{i}")
+
+                petMorphLO.setContentsMargins(-1, 0, -1, -1)
+                petMorphLO.setObjectName("petMorphLO")
+
+                setattr(self, f"petMorph_{i}", QtWidgets.QLabel(parent=containerPet))
+                petMorph = getattr(self, f"petMorph_{i}")
+
+                if check[i][5]!=None: petMorph.setText(check[i][5])
+                else: petMorph.hide()
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petMorph.setFont(font)
+                petMorph.setObjectName("petMorph")
+                petMorphLO.addWidget(petMorph)
+
+                setattr(self, f"petMorphEdit_{i}", QtWidgets.QComboBox(parent=containerPet))
+                petMorphEdit = getattr(self, f"petMorphEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petMorphEdit.sizePolicy().hasHeightForWidth())
+                petMorphEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petMorphEdit.setFont(font)
+                petMorphEdit.setObjectName("petMorphEdit")
+                petMorphLO.addWidget(petMorphEdit)
+                petMorphEdit.setHidden(True)
+                self.formLayout.setLayout(4, QtWidgets.QFormLayout.ItemRole.FieldRole, petMorphLO)
+
+                setattr(self, f"petsAgeBirthdayLO_{i}", QtWidgets.QHBoxLayout())
+                petsAgeBirthdayLO = getattr(self, f"petsAgeBirthdayLO_{i}")
+
+                petsAgeBirthdayLO.setContentsMargins(-1, 0, -1, -1)
+                petsAgeBirthdayLO.setObjectName("petsAgeBirthdayLO")
+
+                setattr(self, f"petsAgeBirthday_{i}", QtWidgets.QLabel(parent=containerPet))
+                petsAgeBirthday = getattr(self, f"petsAgeBirthday_{i}")
+
+                texttoadd="Возраст и день рождения:"
+                if check[i][3]==None and check[i][4]==None: petsAgeBirthday.hide()
+                else:
+                    if check[i][3]!=None:texttoadd=texttoadd+" "+str(check[i][3])+" г."
+                    if check[i][4]!=None: texttoadd=texttoadd+" "+str(check[i][4])
+                    petsAgeBirthday.setText(texttoadd)
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsAgeBirthday.setFont(font)
+                petsAgeBirthday.setObjectName("petsAgeBirthday")
+                petsAgeBirthdayLO.addWidget( petsAgeBirthday)
+
+                setattr(self, f"petsAgeEdit_{i}", QtWidgets.QSpinBox(parent=containerPet))
+                petsAgeEdit = getattr(self, f"petsAgeEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petsAgeEdit.sizePolicy().hasHeightForWidth())
+                petsAgeEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsAgeEdit.setFont(font)
+                petsAgeEdit.setObjectName("petsAgeEdit")
+                petsAgeBirthdayLO.addWidget(petsAgeEdit)
+                petsAgeEdit.setHidden(True)
+
+                setattr(self, f"petsBirthdayEdit_{i}", QtWidgets.QDateEdit(parent=containerPet))
+                petsBirthdayEdit = getattr(self, f"petsBirthdayEdit_{i}")
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsBirthdayEdit.setFont(font)
+                petsBirthdayEdit.setObjectName("petsBirthdayEdit")
+                petsAgeBirthdayLO.addWidget(petsBirthdayEdit)
+                petsBirthdayEdit.setHidden(True)
+                self.formLayout.setLayout(5, QtWidgets.QFormLayout.ItemRole.FieldRole, petsAgeBirthdayLO)
+
+                setattr(self, f"petsGenLO_{i}", QtWidgets.QHBoxLayout())
+                petsGenLO = getattr(self, f"petsGenLO_{i}")
+
+                petsGenLO.setContentsMargins(-1, 0, -1, -1)
+                petsGenLO.setObjectName("petsGenLO")
+
+                setattr(self, f"petsGen_{i}", QtWidgets.QLabel(parent=containerPet))
+                petsGen = getattr(self, f"petsGen_{i}")
+
+                if check[i][11]!=None: petsGen.setText(("Пол: "+check[i][11]))
+                else: petsGen.hide()
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsGen.setFont(font)
+                petsGen.setObjectName("petsGen")
+                petsGenLO.addWidget(petsGen)
+
+                setattr(self, f"petsGenEdit_{i}", QtWidgets.QComboBox(parent=containerPet))
+                petsGenEdit = getattr(self, f"petsGenEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petsGenEdit.sizePolicy().hasHeightForWidth())
+                petsGenEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsGenEdit.setFont(font)
+                petsGenEdit.setCurrentText("")
+                petsGenEdit.setObjectName("petsGenEdit")
+                petsGenLO.addWidget(petsGenEdit)
+                petsGenEdit.setHidden(True)
+                self.formLayout.setLayout(6, QtWidgets.QFormLayout.ItemRole.FieldRole, petsGenLO)
+
+                setattr(self, f"petWeightLO_{i}", QtWidgets.QHBoxLayout())
+                petWeightLO = getattr(self, f"petWeightLO_{i}")
+
+                petWeightLO.setContentsMargins(-1, 0, -1, -1)
+                petWeightLO.setObjectName("petWeightLO")
+
+                setattr(self, f"petsWeight_{i}", QtWidgets.QLabel(parent=containerPet))
+                petsWeight = getattr(self, f"petsWeight_{i}")
+                texttoadd=""
+
+                if check[i][12]!=None and check[i][9]!=None:
+                    texttoadd="Вес: "+str(check[i][9])+" "+check[i][12]
+                    petsWeight.setText(texttoadd)
+                else: petsWeight.hide()
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsWeight.setFont(font)
+                petsWeight.setObjectName("petsWeight")
+                petWeightLO.addWidget(petsWeight)
+
+                setattr(self, f"petWeightNumEdit_{i}", QtWidgets.QSpinBox(parent=containerPet))
+                petWeightNumEdit = getattr(self, f"petWeightNumEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petWeightNumEdit.sizePolicy().hasHeightForWidth())
+                petWeightNumEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petWeightNumEdit.setFont(font)
+                petWeightNumEdit.setObjectName("petWeightNumEdit")
+                petWeightNumEdit.setHidden(True)
+                petWeightLO.addWidget(petWeightNumEdit)
+
+                setattr(self, f"petWeightAsEdit_{i}", QtWidgets.QLineEdit(parent=containerPet))
+                petWeightAsEdit = getattr(self, f"petWeightAsEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth( petWeightAsEdit.sizePolicy().hasHeightForWidth())
+                petWeightAsEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petWeightAsEdit.setFont(font)
+                petWeightAsEdit.setText("")
+                petWeightAsEdit.setObjectName("petWeightAsEdit")
+                petWeightLO.addWidget( petWeightAsEdit)
+                petWeightAsEdit.setHidden(True)
+                self.formLayout.setLayout(7, QtWidgets.QFormLayout.ItemRole.FieldRole, petWeightLO)
+
+                setattr(self, f"petsSymptomsLO_{i}", QtWidgets.QHBoxLayout())
+                petsSymptomsLO = getattr(self, f"petsSymptomsLO_{i}")
+
+                petsSymptomsLO.setContentsMargins(-1, 0, -1, -1)
+                petsSymptomsLO.setObjectName("petsSymptomsLO")
+
+                setattr(self, f"petSympotms_{i}", QtWidgets.QLabel(parent=containerPet))
+                petSympotms = getattr(self, f"petSympotms_{i}")
+
+                if check[i][13]!=None:
+                    petSympotms.setText(("Симптомы: "+check[i][13]))
+                else:
+                    petSympotms.hide()
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petSympotms.setFont(font)
+                petSympotms.setObjectName("petSympotms")
+                petsSymptomsLO.addWidget(petSympotms)
+
+                setattr(self, f"petsSymptomsEdit_{i}", QtWidgets.QLineEdit(parent=containerPet))
+                petsSymptomsEdit = getattr(self, f"petsSymptomsEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petsSymptomsEdit.sizePolicy().hasHeightForWidth())
+                petsSymptomsEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsSymptomsEdit.setFont(font)
+                petsSymptomsEdit.setObjectName("petsSymptomsEdit")
+                petsSymptomsLO.addWidget(petsSymptomsEdit)
+                petsSymptomsEdit.setHidden(True)
+                self.formLayout.setLayout(8, QtWidgets.QFormLayout.ItemRole.FieldRole, petsSymptomsLO)
+
+                setattr(self, f"petDiagnosisLO_{i}", QtWidgets.QHBoxLayout())
+                petDiagnosisLO = getattr(self, f"petDiagnosisLO_{i}")
+
+                petDiagnosisLO.setContentsMargins(-1, 0, -1, -1)
+                petDiagnosisLO.setObjectName("petDiagnosisLO")
+
+                setattr(self, f"label_{i}", QtWidgets.QLabel(parent=containerPet))
+                label = getattr(self, f"label_{i}")
+
+                if check[i][14]!=None and check[i][14]!="":
+                    label.setText(("Диагнозы: "+check[i][14]))
+                else: label.hide()
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                label.setFont(font)
+                label.setObjectName("label")
+                petDiagnosisLO.addWidget(label)
+
+                setattr(self, f"petDiagnosisEdit_{i}", QtWidgets.QLineEdit(parent=containerPet))
+                petDiagnosisEdit= getattr(self, f"petDiagnosisEdit_{i}")
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petDiagnosisEdit.setFont(font)
+                petDiagnosisEdit.setObjectName("petDiagnosisEdit")
+                petDiagnosisLO.addWidget(petDiagnosisEdit)
+                petDiagnosisEdit.setHidden(True)
+                self.formLayout.setLayout(9, QtWidgets.QFormLayout.ItemRole.FieldRole, petDiagnosisLO)
+
+                setattr(self, f"petNeuteredLO_{i}", QtWidgets.QHBoxLayout())
+                petNeuteredLO = getattr(self, f"petNeuteredLO_{i}")
+
+                petNeuteredLO.setContentsMargins(-1, 0, -1, -1)
+                petNeuteredLO.setObjectName("petNeuteredLO")
+
+                setattr(self, f"petNeutered_{i}", QtWidgets.QLabel(parent=containerPet))
+                petNeutered = getattr(self, f"petNeutered_{i}")
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petNeutered.setFont(font)
+                petNeutered.setObjectName("petNeutered")
+                petNeuteredLO.addWidget(petNeutered)
+
+                setattr(self, f"petNeuteredEdit_{i}", QtWidgets.QCheckBox(parent=containerPet))
+                petNeuteredEdit = getattr(self, f"petNeuteredEdit_{i}")
+
+                if check[i][8]!=None and check[i][8]!=False:
+                    petNeutered.show()
+                else: petNeutered.hide()
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petNeuteredEdit.sizePolicy().hasHeightForWidth())
+                petNeuteredEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petNeuteredEdit.setFont(font)
+                petNeuteredEdit.setObjectName("petNeuteredEdit")
+                petNeuteredLO.addWidget(petNeuteredEdit)
+                petNeuteredEdit.setHidden(True)
+                self.formLayout.setLayout(10, QtWidgets.QFormLayout.ItemRole.FieldRole, petNeuteredLO)
+
+                setattr(self, f"petsVacsLO_{i}", QtWidgets.QHBoxLayout())
+                petsVacsLO = getattr(self, f"petsVacsLO_{i}")
+
+                petsVacsLO.setContentsMargins(-1, 0, -1, -1)
+                petsVacsLO.setObjectName("petsVacsLO")
+
+                setattr(self, f"petsVacs_{i}", QtWidgets.QLabel(parent=containerPet))
+                petsVacs = getattr(self, f"petsVacs_{i}")
+
+                if check[i][7]!=None and check[i][7]!="":
+                    petsVacs.setText(("Прививки: "+check[i][7]))
+                else: petsVacs.hide()
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsVacs.setFont(font)
+                petsVacs.setObjectName("petsVacs")
+                petsVacsLO.addWidget(petsVacs)
+                petsVacsEdit = QtWidgets.QLineEdit(parent=containerPet)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petsVacsEdit.sizePolicy().hasHeightForWidth())
+                petsVacsEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsVacsEdit.setFont(font)
+                petsVacsEdit.setObjectName("petsVacsEdit")
+                petsVacsLO.addWidget(petsVacsEdit)
+                petsVacsEdit.setHidden(True)
+                self.formLayout.setLayout(11, QtWidgets.QFormLayout.ItemRole.FieldRole, petsVacsLO)
+
+                setattr(self, f"petsMictochipLO_{i}", QtWidgets.QHBoxLayout())
+                petsMictochipLO = getattr(self, f"petsMictochipLO_{i}")
+
+                setattr(self, f"petMicrochipEdit_{i}", QtWidgets.QCheckBox(parent=containerPet))
+                petMicrochipEdit = getattr(self, f"petMicrochipEdit_{i}")
+
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petMicrochipEdit.sizePolicy().hasHeightForWidth())
+
+                setattr(self, f"petsMicrochip_{i}", QtWidgets.QLabel(parent=containerPet))
+                petsMicrochip = getattr(self, f"petsMicrochip_{i}")
+
+                if check[i][6]!=None and check[i][6]!=False:
+                    petsMicrochip.setText("Микрочип")
+                else: petsMicrochip.hide()
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsMicrochip.setFont(font)
+                petsMicrochip.setObjectName("petsMicrochip")
+                petsMictochipLO.addWidget(petsMicrochip)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petMicrochipEdit.sizePolicy().hasHeightForWidth())
+                petMicrochipEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petMicrochipEdit.setFont(font)
+                petMicrochipEdit.setObjectName("petMicrochipEdit")
+                petsMictochipLO.addWidget(petMicrochipEdit)
+                petMicrochipEdit.setHidden(True)
+                self.formLayout.setLayout(12, QtWidgets.QFormLayout.ItemRole.FieldRole, petsMictochipLO)
+
+                setattr(self, f"petsOwnerLO_{i}", QtWidgets.QHBoxLayout())
+                petsOwnerLO = getattr(self, f"petsOwnerLO_{i}")
+
+                petsOwnerLO.setContentsMargins(-1, 0, -1, -1)
+                petsOwnerLO.setObjectName("petsOwnerLO")
+
+                setattr(self, f"petsOwner_{i}", QtWidgets.QLabel(parent=containerPet))
+                petsOwner = getattr(self, f"petsOwner_{i}")
+
+                if check[i][15]!=None and check[i][15]!="":
+                    petsOwner.setText(("Хозяин: "+check[i][15]))
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsOwner.setFont(font)
+                petsOwner.setObjectName("petsOwner")
+                petsOwnerLO.addWidget(petsOwner)
+                petsOwnerEdit = QtWidgets.QLineEdit(parent=containerPet)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petsOwnerEdit.sizePolicy().hasHeightForWidth())
+                petsOwnerEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsOwnerEdit.setFont(font)
+                petsOwnerEdit.setObjectName("petsOwnerEdit")
+                petsOwnerLO.addWidget(petsOwnerEdit)
+                petsOwnerEdit.setHidden(True)
+                self.formLayout.setLayout(13, QtWidgets.QFormLayout.ItemRole.FieldRole, petsOwnerLO)
+                petsLiveInLO = QtWidgets.QHBoxLayout()
+                petsLiveInLO.setContentsMargins(-1, 0, -1, -1)
+                petsLiveInLO.setObjectName("petsLiveInLO")
+
+                setattr(self, f"petsLivein_{i}", QtWidgets.QLabel(parent=containerPet))
+                petsLivein = getattr(self, f"petsLivein_{i}")
+
+                cur.execute(f'SELECT "название прив клетки" FROM "животные к клеткам" WHERE "id животного"={check[i][0]}')
+                animsCages=cur.fetchall()
+                if animsCages!=[]:
+                    petsLivein.setText(("Живёт в: " + animsCages[0][0]))
+                else: petsLivein.setText("Живёт в: ")
+
+
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsLivein.setFont(font)
+                petsLivein.setObjectName("petsLivein")
+                petsLiveInLO.addWidget(petsLivein)
+                petsLiveinEdit = QtWidgets.QPushButton(parent=containerPet)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petsLiveinEdit.sizePolicy().hasHeightForWidth())
+                petsLiveinEdit.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petsLiveinEdit.setFont(font)
+                petsLiveinEdit.setObjectName("petsLiveinEdit")
+                petsLiveInLO.addWidget(petsLiveinEdit)
+                petsLiveinEdit.setHidden(True)
+                self.formLayout.setLayout(14, QtWidgets.QFormLayout.ItemRole.FieldRole, petsLiveInLO)
+
+                setattr(self,"spacerItem",QtWidgets.QSpacerItem(20, 100, QtWidgets.QSizePolicy.Policy.Minimum,
+                                                   QtWidgets.QSizePolicy.Policy.Expanding))
+
+                spacerItem = getattr(self,"spacerItem")
+                self.formLayout.setItem(17, QtWidgets.QFormLayout.ItemRole.FieldRole, spacerItem)
+                eventActions = QtWidgets.QHBoxLayout()
+                eventActions.setContentsMargins(-1, 0, -1, -1)
+                eventActions.setObjectName("eventActions")
+                spacerItem1 = QtWidgets.QSpacerItem(100, 20, QtWidgets.QSizePolicy.Policy.Expanding,
+                                                    QtWidgets.QSizePolicy.Policy.Minimum)
+                eventActions.addItem(spacerItem1)
+                pushToRedact = QtWidgets.QPushButton(parent=containerPet)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(12)
+                pushToRedact.setFont(font)
+                pushToRedact.setObjectName("pushToRedact")
+                eventActions.addWidget(pushToRedact)
+                pushButton = QtWidgets.QPushButton(parent=containerPet)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(pushButton.sizePolicy().hasHeightForWidth())
+                pushButton.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(12)
+                pushButton.setFont(font)
+                pushButton.setObjectName("pushButton")
+                eventActions.addWidget(pushButton)
+                eventActions.setStretch(0, 4)
+                eventActions.setStretch(1, 3)
+                self.formLayout.setLayout(20, QtWidgets.QFormLayout.ItemRole.FieldRole, eventActions)
+                horizontalLayout_7 = QtWidgets.QHBoxLayout()
+                horizontalLayout_7.setContentsMargins(-1, 50, -1, -1)
+                horizontalLayout_7.setObjectName("horizontalLayout_7")
+
+                setattr(self, f"petPhoto_{i}",QtWidgets.QLabel(parent=containerPet))
+                petPhoto = getattr(self, f"petPhoto_{i}")
+
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(15)
+                petPhoto.setFont(font)
+                petPhoto.setText("")
+                petPhoto.setPixmap(QtGui.QPixmap("../maket/car.png"))
+                petPhoto.setMaximumSize(250,250)
+
+                if check[i][10]!=None and check[i][10]!="":
+                    petPhoto.setPixmap(QtGui.QPixmap(check[i][10]))
+
+                petPhoto.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                petPhoto.setObjectName("petPhoto")
+                horizontalLayout_7.addWidget(petPhoto)
+                petPhotoWayToFile = QtWidgets.QLineEdit(parent=containerPet)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petPhotoWayToFile.sizePolicy().hasHeightForWidth())
+                petPhotoWayToFile.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light SemiCondensed")
+                font.setPointSize(14)
+                petPhotoWayToFile.setFont(font)
+                petPhotoWayToFile.setText("")
+                petPhotoWayToFile.setObjectName("petPhotoWayToFile")
+                horizontalLayout_7.addWidget(petPhotoWayToFile)
+                petPhotoWayToFile.setHidden(True)
+                petPhotoChoose = QtWidgets.QPushButton(parent=containerPet)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                                   QtWidgets.QSizePolicy.Policy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(petPhotoChoose.sizePolicy().hasHeightForWidth())
+                petPhotoChoose.setSizePolicy(sizePolicy)
+                font = QtGui.QFont()
+                font.setFamily("Bahnschrift Light Condensed")
+                font.setPointSize(14)
+                petPhotoChoose.setFont(font)
+                petPhotoChoose.setObjectName("petPhotoChoose")
+                horizontalLayout_7.addWidget(petPhotoChoose)
+                petPhotoChoose.setHidden(True)
+                self.formLayout.setLayout(1, QtWidgets.QFormLayout.ItemRole.FieldRole, horizontalLayout_7)
+                self.horizontalLayout.addWidget(containerPet)
+                spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
+                                                    QtWidgets.QSizePolicy.Policy.Minimum)
+                self.horizontalLayout.addItem(spacerItem2)
+                self.scrollAreaContainer.addWidget(self.scrollArea)
+                self.horizontalLayout_2.addLayout(self.scrollAreaContainer)
+                self.horizontalLayout_2.setStretch(0, 2)
+                self.horizontalLayout_2.setStretch(1, 5)
+
+                pushButton.setStyleSheet("background-color: #CDA989")
+                pushToRedact.setStyleSheet("background-color: #CDA989")
+
+                containerPet.setStyleSheet("""
+                                                QWidget#containerPet {
+                                               border: 3px solid #CDA989; border-radius: 15px
+                                                }
+                                                """)
+                containerPet.setParent(self.scrollAreaWidgetContents)
+                containerPet.setHidden(False)
+
+                descName_L.setStyleSheet("background-color:#CDA989;padding: 5px; border-radius: 15px")
+                self.petsPage.setStyleSheet("""
+                                                        QPushButton {
+                                                        background-color:#CDA989;
+                                                    }
+                                                            QPushButton:disabled {
+                                                                background-color: #B28B77;
+                                                                color: black;
+                                                            }
+                                                        """)
+                self.schedPage.setStyleSheet("""
+                                                                QPushButton {
+                                                                background-color:#CDA989;
+                                                            }
+                                                                    QPushButton:disabled {
+                                                                        background-color: #B28B77;
+                                                                        color: black;
+                                                                    }
+                                                                """)
+                self.mainPage.setStyleSheet("""
+                                                                QPushButton {
+                                                                background-color:#CDA989;
+                                                            }
+                                                                    QPushButton:disabled {
+                                                                        background-color: #B28B77;
+                                                                        color: black;
+                                                                    }
+                                                                """)
+                self.cagesPage.setStyleSheet("""
+                                                                QPushButton {
+                                                                background-color:#CDA989;
+                                                            }
+                                                                    QPushButton:disabled {
+                                                                        background-color: #B28B77;
+                                                                        color: black;
+                                                                    }
+                                                                """)
+
+
+
+                _translate = QtCore.QCoreApplication.translate
+                petWeightAsEdit.setPlaceholderText(
+                    _translate("MainWindow", "Единица измерения (Килограмм, грамм, т.д.)"))
+                petsSymptomsEdit.setPlaceholderText(_translate("MainWindow", "Симптомы"))
+                petDiagnosisEdit.setPlaceholderText(_translate("MainWindow", "Диагноз(ы)"))
+                petNeutered.setText(_translate("MainWindow", "Кастрирован"))
+                petNeuteredEdit.setText(_translate("MainWindow", "Кастрирован"))
+                petsVacsEdit.setPlaceholderText(_translate("MainWindow", "Прививки"))
+                petsMicrochip.setText(_translate("MainWindow", "Микрочип:"))
+                petMicrochipEdit.setText(_translate("MainWindow", "Микрочип"))
+                petsOwnerEdit.setPlaceholderText(_translate("MainWindow", "Хозяин"))
+                petsLiveinEdit.setText(_translate("MainWindow", "Выбрать вольер/клетку"))
+                pushToRedact.setText(_translate("MainWindow", "Редактировать"))
+                pushButton.setText(_translate("MainWindow", "Удалить"))
+                petPhotoWayToFile.setPlaceholderText(_translate("MainWindow", "Путь к изображению"))
+                petPhotoChoose.setText(_translate("MainWindow", "Выбрать изображение"))
+            else:
+                getattr(self,f"containerPet_{i}").setParent(self.scrollAreaWidgetContents)
+                getattr(self,f"containerPet_{i}").setHidden(False)
+
+            MainWindow.setCentralWidget(self.centralwidget)
+
+
 
 
     def EventMenuGui(self):
         self.pushToSearch.setStyleSheet("background-color:#A59B77")
         self.pushToRedactM.setStyleSheet("background-color:#A59B77")
         self.pushToCreateM.setStyleSheet("background-color:#A59B77")
-        self.allEventsLO = QtWidgets.QHBoxLayout()
+        self.allEventsWidget = QtWidgets.QWidget(parent=self.scrollAreaWidgetContents)
+        self.allEventsWidget.setObjectName("allEventsWidget")
+        self.allEventsLO = QtWidgets.QHBoxLayout(self.allEventsWidget)
         self.allEventsLO.setContentsMargins(11, 11, 11, 11)
         self.allEventsLO.setObjectName("allEventsLO")
         self.eventsForDayX = QtWidgets.QVBoxLayout()
         self.eventsForDayX.setContentsMargins(-1, 0, -1, -1)
         self.eventsForDayX.setObjectName("eventsForDayX")
-        self.DayX_L = QtWidgets.QLabel(parent=self.scrollAreaWidgetContents)
+        self.DayX_L = QtWidgets.QLabel(parent=self.allEventsWidget)
         font = QtGui.QFont()
         font.setFamily("Bahnschrift Light Condensed")
         font.setPointSize(20)
@@ -1027,7 +1203,7 @@ class Ui_MainWindow(object):
         self.DayX_L.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.DayX_L.setObjectName("DayX_L")
         self.eventsForDayX.addWidget(self.DayX_L)
-        self.eventXdayX = QtWidgets.QWidget(parent=self.scrollAreaWidgetContents)
+        self.eventXdayX = QtWidgets.QWidget(parent=self.allEventsWidget)
         self.eventXdayX.setObjectName("eventXdayX")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.eventXdayX)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -1038,7 +1214,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.Date_eventXdayX)
         self.Name_eventXdayX = QtWidgets.QLabel(parent=self.eventXdayX)
         font = QtGui.QFont()
-        font.setFamily("Bahnschrift Light Condensed")
         font.setPointSize(20)
         font.setBold(True)
         font.setWeight(75)
@@ -1048,7 +1223,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.Name_eventXdayX)
         self.Desc_eventXdayX = QtWidgets.QLabel(parent=self.eventXdayX)
         font = QtGui.QFont()
-        font.setFamily("Bahnschrift Light Condensed")
         font.setPointSize(18)
         self.Desc_eventXdayX.setFont(font)
         self.Desc_eventXdayX.setObjectName("Desc_eventXdayX")
@@ -1081,11 +1255,15 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
                                             QtWidgets.QSizePolicy.Policy.Minimum)
         self.allEventsLO.addItem(spacerItem1)
-        self.horizontalLayout.addLayout(self.allEventsLO)
+        self.horizontalLayout.addWidget(self.allEventsWidget)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.scrollAreaContainer.addWidget(self.scrollArea)
         self.horizontalLayout_2.addLayout(self.scrollAreaContainer)
         self.horizontalLayout_2.setStretch(0, 2)
         self.horizontalLayout_2.setStretch(1, 5)
+        MainWindow.setCentralWidget(self.centralwidget)
+
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.pushToRedact_eventXdayX.setStyleSheet("background-color:#A59B77")
@@ -1153,6 +1331,7 @@ class Ui_MainWindow(object):
         self.todayToCancel_eventXdayX.setText(_translate("MainWindow", "Отменить"))
         self.todayDone_eventXdayX.setText(_translate("MainWindow", "Сделано"))
 
+
     def CagesMenuGui(self):
         self.petsPage.setStyleSheet("""
                                                                             QPushButton {
@@ -1205,7 +1384,7 @@ class Ui_MainWindow(object):
                     self.info_order.append(check[i][0])
                     setattr(self, f"containerCage_{i}", QtWidgets.QWidget(parent=self.scrollAreaWidgetContents))
                     containerCage = getattr(self, f"containerCage_{i}")
-                    containerCage.setObjectName("containerCage")
+                    containerCage.setObjectName(f"containerCage_{i}")
                     self.formLayout = QtWidgets.QFormLayout(containerCage)
                     self.formLayout.setRowWrapPolicy(QtWidgets.QFormLayout.RowWrapPolicy.WrapLongRows)
                     self.formLayout.setLabelAlignment(
@@ -1401,7 +1580,7 @@ class Ui_MainWindow(object):
                         anims = ""
                         for x in range(len(petsToCage)):
                             anims = anims + str(petsToCage[x][0]) + " ID " + str(petsToCage[x][1])
-                            if x != len(petsToCage) - 1: anims + ","
+                            if x != (len(petsToCage)-1): anims= anims + ","
                         cagePetsLabels.setText("Животные: " + anims)
                         cagePetsChoosen.setText(anims)
                     else:
@@ -1606,6 +1785,7 @@ class Ui_MainWindow(object):
 
                     setattr(self, f"cageNotesEdit_{i}", QtWidgets.QLineEdit(parent=containerCage))
                     cageNotesEdit = getattr(self, f"cageNotesEdit_{i}")
+                    cageNotesEdit.setFont(font)
                     cageNotesEdit.setObjectName(f"cageNotesEdit_{i}")
                     cageNotesLO.addWidget(cageNotesEdit)
 
@@ -1679,11 +1859,8 @@ class Ui_MainWindow(object):
                     cageDescName_L.setStyleSheet("background-color:#8DA578;padding: 5px; border-radius: 15px")
                     cageActionsDelete.setStyleSheet("background-color:#8DA578")
                     cageActionsRedact.setStyleSheet("background-color:#8DA578")
-                    containerCage.setStyleSheet("""
-                                                                        QWidget#containerCage {
-                                                                       border: 3px solid #8DA578; border-radius: 15px
-                                                                        }
-                                                                        """)
+                    containerStyle=f"QWidget#containerCage_{i}"+"{border: 3px solid #8DA578; border-radius: 15px}"
+                    containerCage.setStyleSheet(containerStyle)
                     cageNameEdit.setHidden(True)
                     cageNotesEdit.setHidden(True)
                     cageQuarEdit.setHidden(True)
@@ -1704,6 +1881,7 @@ class Ui_MainWindow(object):
                         lambda: self.redactInitiate((cageActionsRedact.sender()).objectName()))
                     cagePetsEdit.clicked.connect(
                         lambda: self.specialEdit((cagePetsEdit.sender()).objectName()))
+                    cagePhotoChoose.clicked.connect(self.open_file_dialog)
 
                     self.currentRedactButtons.append(f"cageActionsRedact_{i}")
 
@@ -1726,8 +1904,9 @@ class Ui_MainWindow(object):
 
     #Функции окна списка
 
-    def doneChoosing(self):
-        if self.dialog.ui.treeWidget.selectedItems()!=None:
+    def doneChoosing(self,button):
+        cageName = getattr(self, f"cageDescName_L_{self.containerNum}").text()
+        if self.dialog.ui.treeWidget.selectedItems()!=[]:
             allItems=self.dialog.ui.treeWidget.selectedItems()
             self.ItemsPK=[]
             for i in range(len(allItems)):
@@ -1737,12 +1916,99 @@ class Ui_MainWindow(object):
                     for j in range(len(allItems)):
                         if (item[collumnNum+j]).isdigit and (item[collumnNum+j])!=" ":
                             self.ItemsPK.append(item[collumnNum+j])
+                            print("ItemsPK")
                             print(self.ItemsPK)
                         else: break
+            for i in range(len(self.ItemsPK)):  # Проверка, есть ли у животных привязка к другой клетке
+                cur.execute(
+                    'SELECT "название прив клетки", "id животного" '
+                    'FROM "животные к клеткам" '
+                    'WHERE "id животного" = %s AND "название прив клетки" != %s',
+                    (self.ItemsPK[i], cageName)
+                )
+                if cur.fetchall() != []:
+                    self.show_error("К этому животному уже прикреплена другая клетка!")
+                    return
+        self.saveListChangesToEdit(button)
 
+    def saveListChangesToEdit(self,button_name):
+        if self.currentList == "PetsToCages":
+            textChange = getattr(self, f"cagePetsChoosen_{self.containerNum}").setText("Нет")
+            textChange = getattr(self, f"cagePetsLabels_{self.containerNum}").setText("Животные: Нет")
+            cageName = getattr(self, f"cageDescName_L_{self.containerNum}").text()
+            print(self.dialog.ui.treeWidget.selectedItems())
+            if self.dialog.ui.treeWidget.selectedItems()==[]:
+                print(1)
+                #petsToCage = cur.fetchall()
+            else:
+                anims = ""
+                for i in range(len(self.ItemsPK)):
+                    # Проверить существует ли запись
+                    #cur.execute(
+                    #    'SELECT "название прив клетки", "id животного" '
+                    #    'FROM "животные к клеткам" '
+                    #    'WHERE "название прив клетки" = %s AND "id животного" = %s',
+                    #    (cageName, self.ItemsPK[i])
+                    #)
+                    #petsToCage = cur.fetchall()
+                    cur.execute(f'''SELECT petid, имя FROM питомцы WHERE petid={"'" + self.ItemsPK[i] + "'"}''')
+                    pets = cur.fetchall()
+                    for x in range(len(pets)):
+                        anims = anims + str(pets[x][0]) + " ID " + str(pets[x][1])
+                        if i == (len(self.ItemsPK[i]) - 1) and len(self.ItemsPK)>1:
+                            anims=anims + ","
+                    #if petsToCage == []:
+                    #    cur.execute(
+                    #    'SELECT "название прив клетки", "id животного" '
+                    #    'FROM "животные к клеткам" '
+                    #    'WHERE "название прив клетки" = %s AND "id животного" = %s',
+                    #    (cageName, self.ItemsPK[i])
+                    #)
 
+                    textChange = getattr(self, f"cagePetsChoosen_{self.containerNum}").setText(anims)
+                    textChange = getattr(self, f"cagePetsLabels_{self.containerNum}").setText("Животные: " + anims)
+                    self.dialog.done(0)
 
     #Общие функции
+
+    def open_file_dialog(self):
+        #options = QtWidgets.QFileDialog.Options
+        file_path= QtWidgets.QFileDialog
+        choosenpath= file_path.getOpenFileName(
+            self.scrollAreaWidgetContents,
+            "Выберите файл",
+            "",
+            "Изображения (*.png *.jpg *.jpeg *.bmp *.gif);;Все файлы (*)"
+            #options=options,
+        )
+        if file_path: choosenpath=choosenpath[0]
+        else: choosenpath=""
+
+        if self.currentMenu==3:
+            getattr(self,f"cagePhotoWayToFile_{self.containerNum}").setText(str(choosenpath))
+            getattr(self, f"cagePhoto_{self.containerNum}").setPixmap(QtGui.QPixmap(str(choosenpath)))
+
+
+    def show_error(self,error_message):
+        # Создаем и показываем модальное сообщение об ошибке
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+        msg.setWindowTitle("Ошибка")
+        msg.setText("Ошибка выполнения операции")
+        msg.setInformativeText(error_message)
+        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+        msg.exec()
+
+    def request_permission(self,message):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+        msg.setWindowTitle("")
+        msg.setText("Подтвердить операцию")
+        msg.setInformativeText(message)
+        msg.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
+        msg.setDefaultButton(QtWidgets.QMessageBox.StandardButton.No)
+        result=msg.exec()
+        return result == QtWidgets.QMessageBox.StandardButton.Yes
 
     def redactInitiate(self,buttonName):
         self.containerNum=''
@@ -1752,16 +2018,19 @@ class Ui_MainWindow(object):
                 break
             else: preRevContainerNum=preRevContainerNum+x
         for x in reversed(preRevContainerNum):
-            containerNum=self.containerNum+x
+            self.containerNum=self.containerNum+x
         if self.currentMenu==3:
             #Аминь
+            print(self.containerNum)
             for i in ["cagePhoto_","cageDescName_L_","cagePetsLabels_","cageLastClean_","cageQuar_","cageMoPart_",
-                      "cageInfect_","cageSpecial_","cageNotes_"]:
-                hideWidget=getattr(self,f'{i}{self.containerNum}')
+                      "cageInfect_","cageSpecial_"]:
+                widgetName=i+self.containerNum
+                hideWidget=getattr(self,f'{widgetName}')
                 hideWidget.setHidden(True)
             getattr(self,f"cageType_{self.containerNum}").setText("Тип клетки")
+            getattr(self, f"cageNotes_{self.containerNum}").setText("Заметки")
             for i in ["cagePhotoWayToFile_","cagePhotoChoose_","cageNameEdit_","cageTypeEdit_","cagePetsEdit_","cageLastCleanEdit_",
-                      "cageQuarEdit_","cageMoPartEdit_","cageInfectEdit_","cageSpecialAll_","cageSpecialEdit_","cagePetsChoosen_"]:
+                      "cageQuarEdit_","cageMoPartEdit_","cageInfectEdit_","cageSpecialAll_","cageSpecialEdit_","cagePetsChoosen_","cageNotesEdit_"]:
                 showWidget=getattr(self,f'{i}{self.containerNum}')
                 showWidget.setHidden(False)
         for i in self.currentRedactButtons:
@@ -1771,6 +2040,8 @@ class Ui_MainWindow(object):
                 getattr(self,f'cageActionsDelete_{self.containerNum}').setText("Отменить изменения")
                 try:
                     getattr(self,buttonName).clicked.disconnect()
+                    getattr(self, buttonName).clicked.connect(
+                        lambda: self.saveChangesToDB(self.containerNum))
                     getattr(self, f'cageActionsDelete_{self.containerNum}').disconnect()
                     print("Кнопки отключены!")
                 except Exception:
@@ -1781,30 +2052,407 @@ class Ui_MainWindow(object):
         self.dialog = QtWidgets.QDialog()
         self.dialog.ui = Ui_Dialog()
         self.dialog.ui.setupUi(self.dialog)
-        self.dialog.ui.pushButton_2.clicked.connect(self.doneChoosing)
-        self.dialog.ui.pushButton_2.clicked.connect(self.saveChanges)
+        self.dialog.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose, True)
+
         if "cagePetsEdit" in buttonName:
             self.dialog.ui.fillInfo("Животные")
             self.currentList = "PetsToCages"
         else:
             print("aww")
+        print(buttonName)
+        self.dialog.ui.pushButton_2.clicked.connect(
+            lambda: self.doneChoosing(buttonName))
         self.dialog.exec()
+    def saveChangesToDB(self, num):
+        if self.currentMenu==3:
 
-    def saveChanges(self):
-        if self.currentList == "PetsToCages":
-            for i in range(len(self.ItemsPK)):
-                #Проверить существует ли запись
-                cageName=getattr(self,"")
-                cur.execute(f'''SELECT petid, имя FROM питомцы JOIN "животные к клеткам"
+            #Проверить остались ли привязанные записи при переименовании
+            prevName=getattr(self,f'cageDescName_L_{num}').text()
+            cur.execute(f'SELECT * FROM "животные к клеткам" WHERE "название прив клетки"={"'"+prevName+"'"}')
+            check1=cur.fetchall()
+            cur.execute(f'SELECT * FROM "спец теги к клеткам" WHERE "название клетки"={"'" + prevName + "'"}')
+            check2=cur.fetchall()
+            if (check1!=[] or check2!=[]) and prevName!=getattr(self,f'cageNameEdit_{num}').text():
+                self.show_error("К данной клетке ещё привязаны теги или животные, отсоедените все связанные данные перед перименованием!")
+                return
+
+            # Подготовка к сохранению данных
+
+            cur.execute(f'SELECT "тип клетки" FROM "спец теги к клеткам" JOIN "спец теги" ON "спец теги к клеткам"."спец тег"="спец теги"."спец тег" WHERE "спец теги к клеткам"."название клетки"={"'" + prevName + "'"}')
+            info=cur.fetchall()
+            if info!=[]:
+                for i in range(len(info)):
+                    if info[i][0]!=getattr(self,f"cageTypeEdit_{num}").currentText() and info[i][0]!="Общее":
+                        self.show_error("Выбраныне спец теги не подходят этому типу клеток")
+                        return
+
+            allchecks = []
+            for x in [f"cageQuarEdit_{num}", f"cageMoPartEdit_{num}", f"cageInfectEdit_{num}"]:
+                allchecks.append(getattr(self, x).isChecked())
+
+            linked_anims=(getattr(self, f"cagePetsChoosen_{self.containerNum}").text()).split(',')
+            print(linked_anims, "nen")
+            cur.execute(f'SELECT * FROM "животные к клеткам" WHERE "название прив клетки"={"'" + getattr(self,f'cageNameEdit_{num}').text() + "'"}')
+            check_anim=cur.fetchall()
+            animIds=[]
+            if (check_anim!=[] or linked_anims!=[]) and linked_anims[0]!="Нет":
+                for x in range(len(linked_anims)):
+                    add_an = ""
+                    for y in linked_anims[x]:
+                        if y.isdigit() != False: add_an = add_an + y
+                    animIds.append(int(add_an))
+
+
+            #Сохранение данных
+
+            try:
+                cur.execute(
+                    f'UPDATE клетки SET "путь к фото"={"'" + getattr(self, f"cagePhotoWayToFile_{num}").text() + "'"} WHERE "название клетки"={"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"}')
+                conn.commit()
+            except Exception:
+                self.show_error("Что-то пошло не так при изменении типа клеток, проверьте верность данных")
+                return
+
+            if prevName != getattr(self, f'cageNameEdit_{num}').text():
+                try:
+                    cur.execute(
+                        f'UPDATE "клетки" SET "название клетки" = {"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"} WHERE "название клетки"={"'" + prevName + "'"}')
+                    conn.commit()
+                except Exception:
+                    self.show_error("Что-то пошло не так при переименовании клетки. Проверьте верность данных")
+                    return
+
+            try:
+                cur.execute(
+                    f'UPDATE клетки SET "тип клетки"={"'" + getattr(self, f"cageTypeEdit_{num}").currentText() + "'"} WHERE "название клетки"={"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"}')
+                conn.commit()
+            except Exception:
+                self.show_error("Что-то пошло не так при изменении типа клеток, проверьте верность данных")
+                return
+
+
+            if linked_anims[0]=="Нет" and check_anim!=[]:
+                if not self.request_permission("Вы уверены, что хотите удалить все связи?"):
+                    pass
+                else:
+                    try:
+                        cur.execute(f'DELETE FROM "животные к клеткам" WHERE "название прив клетки"={"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"}')
+                        conn.commit()
+                        textChange = getattr(self, f"cagePetsChoosen_{self.containerNum}").setText("Нет")
+                        textChange = getattr(self, f"cagePetsLabels_{self.containerNum}").setText("Животные: Нет")
+                    except Exception:
+                        self.show_error("Что-то пошло не так при удалении связей, проверьте верность данных")
+                        return
+            elif linked_anims!="Нет":
+                print("ровалились")
+                print(animIds)
+                for i in range(len(animIds)):
+                    newPK = random.randint(0, 999999)
+                    cur.execute(
+                        f'INSERT INTO "животные к клеткам"("id привязка животные к клеткам", "id животного", "название прив клетки") VALUES({newPK}, {animIds[i]}, {"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"});')
+                    conn.commit()
+            elif check_anim!=[]:
+                check_anim_ids=[]
+                for i in range(len(check_anim)):
+                    check_anim_ids.append(check_anim[i][1])
+                toAdd=list(set(animIds)-set(check_anim_ids))
+                if toAdd!=[]:
+                    for i in range(len(toAdd)):
+                        newPK=random.randint(0,999999)
+                        cur.execute(
+                            f'INSERT INTO "животные к клеткам"("id привязка животные к клеткам", "id животного", "название прив клетки") VALUES({newPK}, {toAdd[i]}, {"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"});')
+                        conn.commit()
+                toDelete=list(set(check_anim_ids)-set(animIds))
+                if toDelete!=[]:
+                    for i in range(len(toDelete)):
+                        cur.execute(f'DELETE FROM "животные к клеткам" WHERE "id животного"={toDelete[i]};')
+                        conn.commit()
+            else: print("черти")
+
+
+            try:
+                cur.execute(
+                    f'UPDATE клетки SET "дата последней уборки"={"'" + str(getattr(self, f'cageLastCleanEdit_{num}').date().toPyDate()) + "'"} WHERE "название клетки"={"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"}')
+                conn.commit()
+            except Exception:
+                self.show_error("Что-то пошло не так при изменении даты, проверьте верность данных")
+                return
+
+            try:
+                cur.execute(
+                    f'UPDATE public.клетки SET карантийный={allchecks[0]}, "часть модуля"={allchecks[1]}, инфекционный={allchecks[2]} WHERE "название клетки"={"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"}')
+                conn.commit()
+            except Exception:
+                self.show_error("Что-то пошло не так при установке параметров, попробуйте ещё раз")
+                return
+
+            try:
+                cur.execute(
+                    f'UPDATE public.клетки SET заметки={"'" + getattr(self, f'cageNotesEdit_{num}').text() + "'"} WHERE "название клетки"={"'" + getattr(self, f'cageNameEdit_{num}').text() + "'"}')
+                conn.commit()
+            except Exception:
+                self.show_error("Что-то пошло не так при установке параметров, попробуйте ещё раз")
+                return
+
+            self.updateMenu("клетки",num)
+
+    def updateMenu(self, currentList, button_name):
+        cur.execute(f'SELECT * FROM "{currentList}"')
+        check = cur.fetchall()
+        if self.currentMenu == 3:
+            self.currentDeleteButtons = []
+            numofContainers = 0
+            immediate_children = self.scrollAreaWidgetContents.findChildren(QtCore.QObject,
+                                                                            options=QtCore.Qt.FindChildOption.FindDirectChildrenOnly)
+            for j in immediate_children:
+                if j.objectName() != "horizontalLayout" and j.objectName() != "horizontalSpacer_2": numofContainers += 1
+            if len(check) > numofContainers:
+                print("more needed")
+            elif len(check) < numofContainers:
+                print("need to hide")
+            else:
+                for i in range(len(check)):
+                    if check == []:
+                        print("Ничего нет")
+                    else:
+                        for i in range(len(check)):
+                            if hasattr(self, f'containerCage_{i}'):
+                                containerCage = getattr(self, f"containerCage_{i}")
+                                cagePhotoLO = getattr(self, f"cagePhotoLO_{i}")
+                                spacerphotoL = getattr(self, f"spacerphotoL_{i}")
+                                cagePhoto = getattr(self, f"cagePhoto_{i}")
+                                cagePhotoWayToFile = getattr(self, f"cagePhotoWayToFile_{i}")
+                                cagePhotoChoose = getattr(self, f"cagePhotoChoose_{i}")
+
+                                if check[i][7] != None:
+                                    cagePhotoWayToFile.setText(check[i][7])
+                                    cagePhoto.setPixmap(QtGui.QPixmap(check[i][7]))
+                                    cagePhoto.setMaximumSize(200, 200)
+                                    cagePhoto.setScaledContents(True)
+                                else:
+                                    cagePhoto.hide()
+                                    cagePhotoWayToFile.setHidden(True)
+
+                                cagePhotoChoose.setHidden(True)
+                                cagePhotoWayToFile.hide()
+
+                                spacerphotoR = getattr(self, f"spacerphotoR_{i}")
+                                cageNameLO = getattr(self, f"cageNameLO_{i}")
+
+                                cageDescName_L = getattr(self, f"cageDescName_L_{i}")
+                                cageDescName_L.setText(check[i][0])
+
+                                cageNameEdit = getattr(self, f"cageNameEdit_{i}")
+                                cageNameEdit.setPlaceholderText("Название вольера")
+                                cageNameEdit.setText(check[i][0])
+                                cageTypeLO = getattr(self, f"cageTypeLO_{i}")
+
+                                cageType = getattr(self, f"cageType_{i}")
+
+                                cageType.setText(("Тип клетки: " + check[i][6]))
+
+                                cageTypeEdit = getattr(self, f"cageTypeEdit_{i}")
+                                cageTypeEdit.addItem(check[i][6])
+
+                                cur.execute(f'''SELECT "наименование клетки" FROM "тип клеток"
+                                                               WHERE "наименование клетки"!={"'" + check[i][6] + "'"} AND "наименование клетки"!={"'" + "Общее" + "'"}''')
+                                cagesTypes = cur.fetchall()
+                                for x in range(len(cagesTypes)):
+                                    cageTypeEdit.addItem(cagesTypes[x][0])
+
+                                cagePetsLO = getattr(self, f"cagePetsLO_{i}")
+
+                                cagePetsLabels = getattr(self, f"cagePetsLabels_{i}")
+
+                                cagePetsChoosen = getattr(self, f"cagePetsChoosen_{i}")
+
+                                cagePetsEdit = getattr(self, f"cagePetsEdit_{i}")
+
+                                cur.execute(f'''SELECT petid, имя FROM питомцы JOIN "животные к клеткам"
                                                                ON питомцы.petid="животные к клеткам"."id животного"
                                                                WHERE "животные к клеткам"."название прив клетки"={"'" + check[i][0] + "'"}''')
-                petsToCage = cur.fetchall()
-                cur.execute(f"SELECT petid FROM питомцы WHERE petid={self.ItemsPK[i]}")
-                info=cur.fetchall()
-                self.containerNum
-                print(info)
+                                petsToCage = cur.fetchall()
+                                if petsToCage != []:
+                                    anims = ""
+                                    for x in range(len(petsToCage)):
+                                        anims = anims + str(petsToCage[x][0]) + " ID " + str(petsToCage[x][1])
+                                        if x != (len(petsToCage) - 1): anims = anims + ","
+                                    cagePetsLabels.setText("Животные: " + anims)
+                                    cagePetsChoosen.setText(anims)
+                                else:
+                                    cagePetsLabels.setText("Животные: Нет")
+                                    cagePetsChoosen.setText("Нет")
 
-    def updateMenu(self):
+                                cageLastCleanLO = getattr(self, f"cageLastCleanLO_{i}")
+
+                                cageLastClean = getattr(self, f"cageLastClean_{i}")
+
+                                cageLastCleanEdit = getattr(self, f"cageLastCleanEdit_{i}")
+
+                                if check[i][1] != None:
+                                    cageLastClean.setText("Дата последней уборки: " + str(check[i][1]))
+                                    cageLastCleanEdit.setDate(check[i][1])
+                                else:
+                                    cageLastClean.hide()
+
+                                cageQuarLO = getattr(self, f"cageQuarLO_{i}")
+
+                                cageQuar = getattr(self, f"cageQuar_{i}")
+
+                                cageQuarEdit = getattr(self, f"cageQuarEdit_{i}")
+
+                                if (check[i][2] != None and check[i][2] != False) or check[i][2] == True:
+                                    cageQuarEdit.setChecked(True)
+                                    cageQuar.show()
+                                else:
+                                    cageQuarEdit.setChecked(False)
+                                    cageQuar.hide()
+
+                                cageMoPartLO = getattr(self, f"cageMoPartLO_{i}")
+
+                                cageMoPart = getattr(self, f"cageMoPart_{i}")
+
+                                cageMoPartEdit = getattr(self, f"cageMoPartEdit_{i}")
+
+                                if check[i][3] == True:
+                                    cageMoPartEdit.setChecked(True)
+                                    cageMoPart.show()
+                                else:
+                                    cageMoPartEdit.setChecked(False)
+                                    cageMoPart.hide()
+
+                                cageInfectLO = getattr(self, f"cageInfectLO_{i}")
+
+                                cageInfect = getattr(self, f"cageInfect_{i}")
+
+                                cageInfectEdit = getattr(self, f"cageInfectEdit_{i}")
+
+                                if (check[i][4] != None and check[i][4] != False) or check[i][4] == True:
+                                    cageInfectEdit.setChecked(True)
+                                    cageInfect.show()
+                                else:
+                                    cageInfectEdit.setChecked(False)
+                                    cageInfect.hide()
+
+                                cageSpecialLO = getattr(self, f"cageSpecialLO_{i}")
+
+                                cageSpecial = getattr(self, f"cageSpecial_{i}")
+
+                                cageSpecialAll = getattr(self, f"cageSpecialAll_{i}")
+
+                                cageSpecialEdit = getattr(self, f"cageSpecialEdit_{i}")
+
+                                cur.execute(f'''SELECT "спец тег" FROM "спец теги к клеткам" JOIN клетки
+                                                                               ON "спец теги к клеткам"."название клетки"=клетки."название клетки"
+                                                                               WHERE "спец теги к клеткам"."название клетки"={"'" + check[i][0] + "'"}''')
+                                specialToCage = cur.fetchall()
+                                if specialToCage != []:
+                                    specCage = ""
+                                    for x in range(len(specialToCage)):
+                                        specCage = specCage + specialToCage[x][0]
+                                        if x != len(specialToCage) - 1: specCage = specCage + ","
+                                    cageSpecial.setText("Особенности: " + specCage)
+                                    cageSpecialAll.setText(specCage)
+                                else:
+                                    cageSpecial.setText("Особенности: Нет")
+                                    cageSpecialAll.setText("Особенностей нет")
+
+                                cageNotesLO = getattr(self, f"cageNotesLO_{i}")
+
+                                cageNotes = getattr(self, f"cageNotes_{i}")
+
+                                cageNotesEdit = getattr(self, f"cageNotesEdit_{i}")
+
+                                if check[i][5] != None or check[i][5] != "":
+                                    cageNotesEdit.setText(check[i][5])
+                                    cageNotes.setText("Заметки: " + check[i][5])
+                                    cageNotes.show()
+                                else:
+                                    cageNotes.hide()
+
+                                cageActionsLO = getattr(self, f"cageActionsLO_{i}")
+
+                                spacerItem1 = getattr(self, f" spacerItem1_{i}")
+
+                                cageActionsRedact = getattr(self, f"cageActionsRedact_{i}")
+
+                                cageActionsDelete = getattr(self, f"cageActionsDelete_{i}")
+
+                                self.currentDeleteButtons.append(f"cageActionsDelete_{i}")
+                                if len(check) < 3 and i == (len(check) - 1):
+                                    spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding,
+                                                                        QtWidgets.QSizePolicy.Policy.Minimum)
+                                    self.horizontalLayout.addItem(spacerItem2)
+
+                                cageDescName_L.setStyleSheet(
+                                    "background-color:#8DA578;padding: 5px; border-radius: 15px")
+                                cageActionsDelete.setStyleSheet("background-color:#8DA578")
+                                cageActionsRedact.setStyleSheet("background-color:#8DA578")
+                                containerStyle = f"QWidget#containerCage_{i}" + "{border: 3px solid #8DA578; border-radius: 15px}"
+                                containerCage.setStyleSheet(containerStyle)
+                                cageNameEdit.setHidden(True)
+                                cageNotesEdit.setHidden(True)
+                                cageQuarEdit.setHidden(True)
+                                cageInfectEdit.setHidden(True)
+                                cageLastCleanEdit.setHidden(True)
+                                cagePetsEdit.setHidden(True)
+                                cageTypeEdit.setHidden(True)
+                                cageMoPartEdit.setHidden(True)
+                                cageSpecialEdit.setHidden(True)
+                                cageSpecialAll.setHidden(True)
+                                cagePetsChoosen.hide()
+
+                                cagePhotoChoose.setHidden(True)
+                                cagePhotoWayToFile.setHidden(True)
+                                cageNameEdit.setHidden(True)
+
+                                cageActionsRedact.clicked.disconnect()
+                                cagePetsEdit.clicked.disconnect()
+                                cagePhotoChoose.clicked.disconnect()
+
+                                cageActionsRedact.clicked.connect(
+                                    lambda: self.redactInitiate((cageActionsRedact.sender()).objectName()))
+                                cagePetsEdit.clicked.connect(
+                                    lambda: self.specialEdit((cagePetsEdit.sender()).objectName()))
+                                cagePhotoChoose.clicked.connect(self.open_file_dialog)
+
+                                self.currentRedactButtons.append(f"cageActionsRedact_{i}")
+
+                                cageNotesEdit.setPlaceholderText("Заметки")
+                                cagePetsEdit.setText("Выбрать животных")
+                                cageQuar.setText("Карантинный")
+                                cageQuarEdit.setText("Карантинный")
+                                cageMoPart.setText("Часть модуля")
+                                cageMoPartEdit.setText("Часть модуля")
+                                cageInfect.setText("Инфекционный")
+                                cageInfectEdit.setText("Инфекционный")
+                                # cageSpecial.setText("Особенности:")
+                                # cageSpecialAll.setText("Список особенностей")
+                                cageSpecialEdit.setText("Выбрать особенности")
+                                cageActionsRedact.setText("Редактировать")
+                                cageActionsDelete.setText("Удалить")
+
+                                for j in ["cagePhoto_", "cageDescName_L_", "cagePetsLabels_", "cageLastClean_",
+                                          "cageQuar_", "cageMoPart_",
+                                          "cageInfect_", "cageSpecial_"]:
+                                    widgetName = j + str(i)
+                                    showWidget = getattr(self, f'{widgetName}')
+                                    showWidget.setHidden(False)
+                                getattr(self, f"cageType_{i}").setText("Тип клетки")
+                                getattr(self, f"cageNotes_{i}").setText("Заметки")
+                                for j in ["cagePhotoWayToFile_", "cagePhotoChoose_", "cageNameEdit_", "cageTypeEdit_",
+                                          "cagePetsEdit_", "cageLastCleanEdit_",
+                                          "cageQuarEdit_", "cageMoPartEdit_", "cageInfectEdit_", "cageSpecialAll_",
+                                          "cageSpecialEdit_", "cagePetsChoosen_", "cageNotesEdit_"]:
+                                    widgetName = j + str(i)
+                                    hideWidget = getattr(self, f'{widgetName}')
+                                    hideWidget.setHidden(True)
+
+                            (getattr(self, f'containerCage_{i}')).setParent(self.scrollAreaWidgetContents)
+                            getattr(self, f'containerCage_{i}').setHidden(False)
+
+
+    def hideOldWidgets(self):
         print(1)
 
     def cancelChanges(self):
@@ -1839,20 +2487,39 @@ class Ui_MainWindow(object):
         self.CagesMenuGui()
 
     def hideEverything(self):
-        if hasattr(self, 'containerPet'):
-            self.containerPet.hide()
-        if hasattr(self, 'mainVertLayout'):
-            print(self.mainVertLayout.parent())
-            self.mainVertWidget.setParent(None)
-            self.mainVertWidget.hide()
-            print(1)
+        if hasattr(self, f'containerPet_{0}'):
+            cur.execute('SELECT * FROM питомцы')
+            needToBeDeleted = len(cur.fetchall())
+            for i in range(needToBeDeleted):
+                getattr(self, f"containerPet_{i}").setParent(None)
+                getattr(self, f"containerPet_{i}").setHidden(True)
+        if hasattr(self, 'mainVertWidget'):
+            for i in reversed(range(self.horizontalLayout.count())):
+                item = self.horizontalLayout.itemAt(i)
+                if isinstance(item, QtWidgets.QSpacerItem):
+                    self.horizontalLayout.takeAt(i)
+            getattr(self, "mainVertWidget").setParent(None)
+            getattr(self, "mainVertWidget").hide()
+            getattr(self, "spacerItem")
+            print(2)
         if hasattr(self, f"containerCage_{0}"):
-            if hasattr(self, f"cagePhotoLO_{0}"):
-                cur.execute('SELECT * FROM клетки')
-                needToBeDeleted = len(cur.fetchall())
-                for i in range(needToBeDeleted):
-                    getattr(self, f"containerCage_{i}").setParent(None)
-                    getattr(self, f"containerCage_{i}").setHidden(True)
+            print(3)
+            cur.execute('SELECT * FROM клетки')
+            needToBeDeleted = len(cur.fetchall())
+            for i in range(needToBeDeleted):
+                getattr(self, f"containerCage_{i}").setParent(None)
+                getattr(self, f"containerCage_{i}").setHidden(True)
+        if hasattr(self,"allEventsWidget"):
+            print("GAAAH")
+            for i in reversed(range(self.allEventsLO.count())):
+                item = self.allEventsLO.itemAt(i)
+                if isinstance(item, QtWidgets.QSpacerItem):
+                    self.allEventsLO.takeAt(i)
+                    print(i)
+            self.allEventsWidget.setParent(None)
+            self.allEventsWidget.hide()
+
+
 
 
     def switchMenu(self):
